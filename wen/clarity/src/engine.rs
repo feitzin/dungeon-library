@@ -20,10 +20,10 @@ use std::collections::HashMap;
  *                      element is the Area connected to.
  */
 pub struct Area {
-    pub name: str,
+    pub name: String,
     pub description: String,
-    actions: Vec<T>,
-    directions: HashMap<(String, Area)>,
+    actions: HashMap<String, fn()>,
+    directions: HashMap<String, Area>,
 }
 
 
@@ -32,19 +32,20 @@ impl Area {
 
     pub fn new() -> Self {
         Area {
-            name:           "",
+            name:           String::new(),
             description:    String::new(),
-            actions:        Vec::new(),
+            actions:        HashMap::new(),
             directions:     HashMap::new(),
         }
     }
 
-    pub fn go(&self, direction: &String) -> Option<Area> {
-        match directions.get(direction) {
-            Some(area) => area,
+    pub fn go(&self, direction: &String) -> Option<&Area> {
+        match self.directions.get(direction) {
+            Some(area) => Some(area),
             None       => {
                 println!("You can't get to {} from {}!", direction, self.name);
                 None
             },
         }
     }
+}
