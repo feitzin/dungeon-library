@@ -1,2 +1,2 @@
 # dungeon-library
-Virtual worlds for the era when the world has become virtual.
+Virtual worlds for the era where the world has become virtual.
