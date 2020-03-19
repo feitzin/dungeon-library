@@ -3,11 +3,15 @@ from abc import ABC, abstractmethod
 import curses
 from curses import wrapper
 
+from data import read_map
+
 # init and cleanup
 def init():
     '''
         Initializes curses.
     '''
+    stdscr = curses.initscr()
+    stdscr.clear()
     curses.noecho()
     curses.cbreak()
 
@@ -33,16 +37,11 @@ class Display(ABC):
         pass
 
     @abstractmethod
-    def save(self, config):
-        pass
-
-    @abstractmethod
     def load(self, config):
         pass
 
-    @abstractmethod
-    def run(self):
-        pass
+    def listen(self, stdscr):
+        return stdscr.getkey()
 
 class DungeonDisplay(Display):
     '''
@@ -50,24 +49,92 @@ class DungeonDisplay(Display):
         text info box, and an interactive sidebar.
     '''
     def __init__(self, config=None):
-        height = curses.LINES
-        width = curses.COLS
+        super(DungeonDisplay, self)
         
-        #self.vis = curses.newwin(height - 8, width - 16, 0, 0) # main map window
-        self.vis = None
-        self.info = curses.newwin(height, width, height - 8, width - 16) # info box
-        self.sidebar = curses.newwin(height, width, 0, width - 16) # sidebar
+        self.h = max(curses.LINES, 41)
+        self.w = max(curses.COLS, 49)
+        self.info_h = 8
+        self.side_w = 16
+        self.margin_h = (self.h - self.info_h)//2
+        self.margin_w = (self.w - self.side_w)//2
 
+        # Set default initialization.
+
+        # saved world map; main map window; info/dialogue box; sidebar
+        self.world = None
+        self.pos = None
+        self.vis = curses.newwin(self.h - self.info_h, self.w - self.side_w, 0, 0)
+        self.info = curses.newwin(self.h, self.w, self.h - self.info_h, self.w - self.side_w)
+        self.sidebar = curses.newwin(self.h, self.w, 0, self.w - self.side_w)
+
+        for scr in [self.vis, self.info, self.sidebar]:
+            scr.clear()
+            scr.refresh()
+        
+        # world exploration or sidebar interaction mode
+        self.mode = 'world'
+
+        # Load specified state if given.
         if config: load(config)
 
-        if self.vis is not None: self.vis.keypad = True
-        self.sidebar.keypad=True
-
     def load(config):
+        '''
+            Loads a config dictionary.
+        '''
+        # load world map
+        if 'map' in config:
+            self.world = read_map(config['map'])
+            self.render_map()
+
+        if 'pos' in config:
+            move(config[pos])
+
+        if 'text' in config:
+            info(text)
+
+    def render_map(self):
+        '''
+            Reloads world map info into the vis pad.
+        '''
+        h = len(self.world)
+        w = len(self.world[0])
+        self.vis = curses.newpad(h + 2 * margin_h, w + 2 * margin_w)
+        for i in range(h):
+            for j in range(w):
+                self.vis.addch(i + margin_h, j + margin_w, self.world[i][j])
+
+    def move(self, pos):
+        '''
+            Moves to a specified coordinate in the world map.
+        '''
+        if self.x is not None and self.y is not None:
+            self.vis.addch(self.x, self.y, self.world[self.x][self.y])
+            
+        self.x = pos[0]
+        self.y = pos[1]
+        self.vis.addch(self.x, self.y, '@')
+        
+        self.vis.refresh(max(pos[0] - self.margin_h, 0), max(pos[1] - self.margin_w, 0), 0, 0, self.h - self.info_h, self.w - self.side_w)
+
+    def info(self, text):
+        '''
+            Displays text in the infobox.
+        '''
+        self.info.addstr(0, 0, text)
+
+    def sidebar(self, text):
+        '''
+            Displays text in the sidebar.
+        '''
         pass
 
-    def save(self, config):
-        pass
-
-    def run(self):
+    def refresh_all(self):
+        '''
+            Refreshes all windows.
+        '''
+        if self.h != max(curses.LINES, 41) or self.w != max(curses.COLS, 49):
+            self.h = max(curses.LINES, 41)
+            self.w = max(curses.COLS, 49)
+            self.margin_h = (self.h - self.info_h)//2
+            self.margin_w = (self.w - self.side_w)//2
         pass

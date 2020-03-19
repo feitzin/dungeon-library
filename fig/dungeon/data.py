@@ -7,4 +7,8 @@ def load(f):
     config = json.load(open(f, 'r'))
 
 def read_map(f):
-    pass
+    world = []
+    lines = [l.strip() for l in open(f, 'r').readlines()]
+    for l in lines:
+        world.append([c for c in line])
+    return world
