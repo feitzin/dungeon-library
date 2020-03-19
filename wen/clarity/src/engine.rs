@@ -9,10 +9,18 @@
 use std::collections::HashMap;
 use std::boxed::Box;
 
-pub struct Context{
-    name: String,
-    args: Vec<String>,
+pub struct Context<'a, T: Describable> {
+    pub object: &'a T,
 }
+
+pub trait Describable{
+    fn describe(&self) -> &String;
+}
+
+fn examine<T:Describable>(ctx: Context<T>) {
+    println!("{}", ctx.object.describe());
+}
+
 
 /**
  * This structure describes a given area/room.
@@ -27,25 +35,32 @@ pub struct Context{
 pub struct Area {
     pub name: String,
     pub description: String,
-    actions: HashMap<String, Box<dyn FnMut()>>,
+    actions: HashMap<String, Box<dyn FnMut(Context<Area>)>>,
     directions: HashMap<String, Area >,
 }
 
+impl Describable for Area{
+    fn describe(&self) -> &String {
+        &self.description
+    }
+}
 
 
 impl Area {
 
     pub fn new() -> Self {
-        Area {
+        let mut me = Area {
             name:           String::new(),
             description:    String::new(),
             actions:        HashMap::new(),
             directions:     HashMap::new(),
-        }
+        };
+        me.actions.insert("examine".to_string(), Box::new(examine));
+        me
     }
 
 
-    pub fn add_action(&mut self, descr: String, action: impl FnMut() + 'static) {
+    pub fn add_action(&mut self, descr: String, action: impl FnMut(Context<Area>) + 'static) {
         self.actions.insert(descr, Box::new(action));
     }
 
@@ -69,7 +84,7 @@ impl Area {
     /**
      * Get a reference to the function associated with a given action
      */
-    pub fn act(&self, action: &String) -> Option<&dyn FnMut()> {
+    pub fn act(&self, action: &String) -> Option<&dyn FnMut(Context<Area>)> {
         match self.actions.get(action) {
             Some(act)  => Some(&*act),
             None       => {
@@ -93,25 +108,33 @@ impl Area {
 pub struct Player {
     pub name: String,
     pub description: String,
-    actions: HashMap<String, Box<dyn FnMut()>>,
+    actions: HashMap<String, Box<dyn Fn(Context<Player>)>>,
     inventory: HashMap<String, Item> ,
 }
 
 
+impl Describable for Player {
+    fn describe(&self) -> &String {
+        &self.description
+    }
+}
 
 impl Player {
 
     pub fn new(name: String, description: String) -> Self {
-        Player {
+        let mut me = Player {
             name,
             description,
             actions: HashMap::new(),
             inventory: HashMap::new(),
-        }
+        };
+        me.add_action("examine".to_string(), examine);
+        me.add_action("inventory".to_string(), |ctx| {ctx.object.display_inventory()});
+        me
     }
 
 
-    pub fn add_action(&mut self, descr: String, action: impl FnMut() + 'static) {
+    pub fn add_action(&mut self, descr: String, action: impl Fn(Context<Player>) + 'static) {
         self.actions.insert(descr, Box::new(action));
     }
 
@@ -119,15 +142,28 @@ impl Player {
         self.inventory.insert(name, item);
     }
 
+    /**
+     * Get a reference to the function associated with a given action
+     */
+    pub fn act(&self, action: &String) -> Option<&dyn Fn(Context<Player>)> {
+        match self.actions.get(action) {
+            Some(act)  => Some(&*act),
+            None       => {
+                println!("You don't know how to {}!", action);
+                None
+            },
+        }
+    }
+
     pub fn display_inventory(&self) {
         println!("You have:");
         if self.inventory.is_empty() {
             println!(concat!(
-                   "\tThe bare scraps of lint in your pockets, the clothes you",
-                   " are wearing, and a water-bottle plastered in stickers that",
-                   " say thing like \"All are welcome here\" and \"Smash the",
-                   " Patriarchy\". Also, 7 cents in assorted pennies. Not much",
-                   " of use, anyway."
+                   "\tThe bare scraps of lint in your pockets, the clothes you\n",
+                   "\tare wearing, and a water-bottle plastered in stickers that\n",
+                   "\tsay thing like \"All are welcome here\" and \"Smash the\n",
+                   "\tPatriarchy\". Also, 7 cents in assorted pennies. Not much\n",
+                   "\tof use, anyway."
                 ));
             return;
         }

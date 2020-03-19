@@ -66,7 +66,11 @@ fn main() {
             println!("Goodbye.");
             break;
         } else {
-            println!("I don't know how to do that");
+            match play.act(&command.trim_end().to_string()) {
+                Some(action) => (action)(engine::Context{object: &play}),
+                None => {},
+            }
+            //println!("I don't know how to do that");
         }
 
         command.clear();
