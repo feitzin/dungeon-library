@@ -133,6 +133,8 @@ impl Player {
         }
 
         for (name, item) in self.inventory.iter() {
+            // Honestly, probably ought to move this to the item at some point
+            // TODO, properly pluralize names if need be?
             let prefix = match item.quantity {
                 0 => "All out of",
                 1 => "A single",
