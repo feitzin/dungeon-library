@@ -13,6 +13,6 @@ from data import load
 def main(stdscr):
     stdscr.clear()
     display = DungeonDisplay(load('resources/config/start.config'))
-    sleep(15)
+    sleep(3)
 
 wrapper(main)

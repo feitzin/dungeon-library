@@ -25,10 +25,6 @@ def end(windows):
     curses.echo()
     curses.endwin()
 
-# curses wrapper
-def run(driver):
-    wrapper(driver)
-
 class Display(ABC):
     '''
         Abstract base class for dungeon displays.
@@ -51,12 +47,15 @@ class DungeonDisplay(Display):
     def __init__(self, config=None):
         super(DungeonDisplay, self)
         
-        self.h = max(curses.LINES, 41)
-        self.w = max(curses.COLS, 49)
+        self.h = min(curses.LINES, 41)
+        self.w = min(curses.COLS, 49)
         self.info_h = 8
         self.side_w = 16
         self.margin_h = (self.h - self.info_h)//2
         self.margin_w = (self.w - self.side_w)//2
+
+        self.x = -1
+        self.y = -1
 
         # Set default initialization.
 
@@ -75,9 +74,9 @@ class DungeonDisplay(Display):
         self.mode = 'world'
 
         # Load specified state if given.
-        if config: load(config)
+        if config: self.load(config)
 
-    def load(config):
+    def load(self, config):
         '''
             Loads a config dictionary.
         '''
@@ -87,10 +86,10 @@ class DungeonDisplay(Display):
             self.render_map()
 
         if 'pos' in config:
-            move(config[pos])
+            self.move(config['pos'])
 
         if 'text' in config:
-            info(text)
+            self.log(config['text'])
 
     def render_map(self):
         '''
@@ -98,29 +97,38 @@ class DungeonDisplay(Display):
         '''
         h = len(self.world)
         w = len(self.world[0])
-        self.vis = curses.newpad(h + 2 * margin_h, w + 2 * margin_w)
+        self.vis = curses.newpad(h + 2 * self.margin_h, w + 2 * self.margin_w)
+
+        #for i in range(h + 2 * margin_h):
+        #    for j in range(w + 2 * margin_w):
+        #        self.vis.addch(i, j, ' ')
+        
         for i in range(h):
             for j in range(w):
-                self.vis.addch(i + margin_h, j + margin_w, self.world[i][j])
+                self.vis.addch(i + self.margin_h, j + self.margin_w,
+                               self.world[i][j])
 
     def move(self, pos):
         '''
             Moves to a specified coordinate in the world map.
         '''
-        if self.x is not None and self.y is not None:
+        if self.x != -1 and self.y != -1:
             self.vis.addch(self.x, self.y, self.world[self.x][self.y])
             
         self.x = pos[0]
         self.y = pos[1]
         self.vis.addch(self.x, self.y, '@')
         
-        self.vis.refresh(max(pos[0] - self.margin_h, 0), max(pos[1] - self.margin_w, 0), 0, 0, self.h - self.info_h, self.w - self.side_w)
+        self.vis.refresh(max(pos[0] - self.margin_h, 0),
+                         max(pos[1] - self.margin_w, 0),
+                         0, 0, self.h - self.info_h, self.w - self.side_w)
 
-    def info(self, text):
+    def log(self, text):
         '''
             Displays text in the infobox.
         '''
         self.info.addstr(0, 0, text)
+        self.info.refresh()
 
     def sidebar(self, text):
         '''
@@ -132,9 +140,9 @@ class DungeonDisplay(Display):
         '''
             Refreshes all windows.
         '''
-        if self.h != max(curses.LINES, 41) or self.w != max(curses.COLS, 49):
-            self.h = max(curses.LINES, 41)
-            self.w = max(curses.COLS, 49)
+        if self.h != min(curses.LINES, 41) or self.w != min(curses.COLS, 49):
+            self.h = min(curses.LINES, 41)
+            self.w = min(curses.COLS, 49)
             self.margin_h = (self.h - self.info_h)//2
             self.margin_w = (self.w - self.side_w)//2
         pass
