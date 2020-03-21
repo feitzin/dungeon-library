@@ -86,6 +86,8 @@ class DungeonDisplay(Display):
         # load world map
         if 'map' in config:
             self.world = read_map(config['map'])
+            self.x = -1
+            self.y = -1
             self.render_map()
 
         if 'pos' in config:
@@ -154,21 +156,21 @@ class DungeonDisplay(Display):
                            self.world[self.y][self.x])
 
         if pos is not None:
-            self.x = pos[0]
-            self.y = pos[1]
+            self.y = pos[0]
+            self.x = pos[1]
         self.vis.addch(self.y + self.margin_h, self.x + self.margin_w, '@')
         
-        self.vis.refresh(max(pos[0] - self.margin_h, 0),
-                         max(pos[1] - self.margin_w, 0),
-                         0, 0,
-                         self.vh - 1, self.vw - 1)
+        self.vis.refresh(self.y, self.x,
+                         0, 0, self.vh - 1, self.vw - 1)
 
     def log(self):
         '''
             Displays text in the infobox.
         '''
         if self.text is None: return
-        self.info.addstr(0, 0, self.text + ' ' + str(self.h) + ' ' + str(self.w) + ' ' + str(self.margin_h) + ' ' + str(self.margin_w))
+        self.info.addstr(0, 0, self.text + '\n' +
+                         ' '.join([str(self.h), str(self.w), str(self.margin_h), str(self.margin_w)]) + '\n' +
+                         ' '.join([str(self.y), str(self.x)]))
         self.info.refresh()
 
     def side_log(self):
