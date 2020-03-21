@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import curses
 from curses import wrapper
 
-from data import read_map
+from data import read_map, read_icon
 
 # init and cleanup
 def init():
@@ -24,7 +24,7 @@ def end(windows):
         scr.keypad(False)
     curses.echo()
     curses.endwin()
-
+    
 class Display(ABC):
     '''
         Abstract base class for dungeon displays.
@@ -72,6 +72,7 @@ class DungeonDisplay(Display):
         self.pos = None
         self.text = None
         self.sidetext = None
+        self.icon = None
         
         self.scr = stdscr
 
@@ -96,6 +97,10 @@ class DungeonDisplay(Display):
         if 'text' in config:
             self.text = config['text']
             self.log()
+
+        if 'icon' in config:
+            self.icon = read_icon(config['icon'])
+            self.draw_icon()
 
     def draw_borders(self):
         '''
@@ -181,12 +186,24 @@ class DungeonDisplay(Display):
         self.sidebar.addstr(0, 0, self.sidetext)
         self.sidebar.refresh()
 
+    def draw_icon(self):
+        '''
+            Redraws icon box.
+        '''
+        if self.icon is None: return
+        self.box.clear()
+        for i in range(min(len(self.icon), self.info_h)):
+            for j in range(min(len(self.icon[i]), self.side_w - 2)):
+                # TODO: figure out this thing...
+                self.box.addch(i, j, self.icon[i][j])
+        self.box.refresh()
+
     def resize(self):
         '''
             Recalculates sizes and refreshes if necessary.
         '''
         h = min(curses.LINES, self.MAX_HEIGHT)
-        h = min(curses.COLS, self.MAX_WIDTH)
+        w = min(curses.COLS, self.MAX_WIDTH)
         if self.h != h or self.w != w:
             self.h = h
             self.w = w
@@ -200,13 +217,13 @@ class DungeonDisplay(Display):
         '''
             Refreshes and redraws all windows.
         '''
-        self.vis = curses.newwin(self.margin_h * 2 + 1, self.margin_w * 2 + 1,
+        self.vis = curses.newwin(self.vh, self.vw,
                                  0, 0)
-        self.info = curses.newwin(self.info_h, self.w - self.side_w - 3,
+        self.info = curses.newwin(self.info_h, self.vw - 4,
                                   self.vh + 1, 2)
         self.sidebar = curses.newwin(self.vh, self.side_w,
                                      0, self.vw + 1)
-        self.box = curses.newwin(self.h - self.vh - 2, self.side_w,
+        self.box = curses.newwin(self.info_h, self.side_w - 1,
                                  self.vh + 1, self.vw + 1)
         
         self.draw_borders()
