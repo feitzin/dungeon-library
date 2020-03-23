@@ -17,5 +17,4 @@ class Dungeon():
         self.mode = self.WORLD_MODE
         self.x = -1
         self.y = -1
-
-        
+        self.legend = None

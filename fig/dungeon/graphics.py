@@ -49,7 +49,7 @@ class DungeonDisplay(Display):
 
         # constants
         self.MAX_HEIGHT = 51
-        self.MAX_WIDTH = 82
+        self.MAX_WIDTH = 128
         
         self.info_h = 8
         self.side_w = 24
