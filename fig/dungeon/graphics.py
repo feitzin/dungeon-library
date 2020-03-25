@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import curses
 from curses import wrapper
 
-from data import read_map, read_icon
+from data import read_map, read_icon, read_key
 
 # init and cleanup
 def init():
@@ -73,6 +73,7 @@ class DungeonDisplay(Display):
         self.text = None
         self.sidetext = None
         self.icon = None
+        self.key = None
         
         self.scr = stdscr
 
@@ -84,7 +85,9 @@ class DungeonDisplay(Display):
         '''
             Loads a config dictionary.
         '''
-        # load world map
+        if 'rendering' in config:
+            self.key = read_key(config['rendering'])
+
         if 'map' in config:
             self.world = read_map(config['map'])
             self.x = -1
@@ -148,8 +151,9 @@ class DungeonDisplay(Display):
         
         for i in range(h):
             for j in range(w):
+                char = self.world[i][j]
                 self.vis.addch(i + self.margin_h, j + self.margin_w,
-                               self.world[i][j])
+                               char if self.key is None else (self.key[char] if char in self.key else char))
 
     def move(self, pos=None):
         '''
@@ -175,7 +179,8 @@ class DungeonDisplay(Display):
         if self.text is None: return
         self.info.addstr(0, 0, self.text + '\n' +
                          ' '.join([str(self.h), str(self.w), str(self.margin_h), str(self.margin_w)]) + '\n' +
-                         ' '.join([str(self.y), str(self.x)]))
+                         ' '.join([str(self.y), str(self.x)]) + '\n' +
+                         ' '.join([str(len(self.world)), str(len(self.world[0]))]))
         self.info.refresh()
 
     def side_log(self):
