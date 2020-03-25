@@ -1,0 +1,26 @@
+maps.py contains files for parsing .map files into levels and storing user data during a playthrough
+
+run_me_to_play.py is a test implementation of a map using the curses module for python
+
+firstfloorhome.map is a test map file
+
+SYMBOLS:
+you are x
+. is floor
+# is wall
+< is upward stairs
++ is a closed door
+/ is an open door
+= is a tables/crate/shelves
+, is "interesting" floor
+^ is bushes
+~ is water/sink
+: is unpassable terrain
+
+CONTROLS:
+w,a,s,d move
+e interacts (currently opens/closes doors)
+q quits
+
+TO DO:
+I want to make an easy way to develop maps. Particularly, I'd like to add an "investigate" button that prompts a body of text to describe your current room. I just need an easy way to associate spaces of the map with particular texts. I'll probably write a script that lets me design/modify these text files in-game.
