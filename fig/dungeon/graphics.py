@@ -161,8 +161,9 @@ class DungeonDisplay(Display):
         '''
         if self.world is None: return
         if self.x != -1 and self.y != -1:
+            c = self.world[self.y][self.x]
             self.vis.addch(self.y + self.margin_h, self.x + self.margin_w,
-                           self.world[self.y][self.x])
+                           self.key[c] if self.key is not None and c in self.key else c)
 
         if pos is not None:
             self.y = pos[0]

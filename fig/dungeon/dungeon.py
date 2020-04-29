@@ -14,9 +14,10 @@ class Dungeon():
     WORLD_MODE = 0
     SIDE_MODE = 1
 
-    IMMOBILE = '0'
-    MOVABLE = '1'
-    GATE = '2'
+    MOVABLE = ['m', 'd', 'f', 's']
+    SITTABLE = ['s']
+    INTERACTIVE = []
+    GATE = ['g']
     
     def __init__(self, display=None, config=None):
         '''
@@ -30,6 +31,7 @@ class Dungeon():
         self.h = 0
 
         self.movability = None
+        self.objects = None
 
         if display is not None:
             self.display = display
@@ -55,6 +57,9 @@ class Dungeon():
 
         if 'movability' in config:
             self.movability = read_key(config['movability'])
+
+        if 'objects' in config:
+            self.objects = read_key(config['objects'])
 
     def move(self, key, debug=False):
         '''
@@ -82,14 +87,14 @@ class Dungeon():
         nx = self.x + offset[1]
 
         # check if valid
-        if nx < 0 or nx > self.w:
+        if nx < 0 or nx >= self.w:
             return
-        if ny < 0 or ny > self.h:
+        if ny < 0 or ny >= self.h:
             return
 
         # if we can move, then move
         if self.world[ny][nx] in self.movability:
-            if self.movability[self.world[ny][nx]] == self.MOVABLE:
+            if self.movability[self.world[ny][nx]] in self.MOVABLE:
                 self.y = ny
                 self.x = nx
                 # TODO: ambience
@@ -99,11 +104,18 @@ class Dungeon():
         # otherwise, try an off-location activation
         self.activate(ny, nx, key)
 
-    def activate(self, x, y, key):
+    def activate(self, y, x, key, debug=False):
         '''
             Off-coordinate location activation.
         '''
-        pass # TODO
+        if self.world is None:
+            return
+        if x >= self.w or y >= self.h:
+            return
+        o = self.world[y][x]
+        if debug: self.display.side_log(str(self.y) + ',' + str(self.x) + '\n' + str(y) + ',' + str(x) + '\n' + o)
+        if o in self.objects:
+            self.display.log("It's a " + self.objects[o] + ".")
 
     def look(self):
         '''
