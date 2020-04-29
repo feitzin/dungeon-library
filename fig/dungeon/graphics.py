@@ -172,23 +172,26 @@ class DungeonDisplay(Display):
         self.vis.refresh(self.y, self.x,
                          0, 0, self.vh - 1, self.vw - 1)
 
-    def log(self):
+    def log(self, text=None):
         '''
             Displays text in the infobox.
         '''
+        if text is not None:
+            self.text = text
         if self.text is None: return
-        self.info.addstr(0, 0, self.text + '\n' +
-                         ' '.join([str(self.h), str(self.w), str(self.margin_h), str(self.margin_w)]) + '\n' +
-                         ' '.join([str(self.y), str(self.x)]) + '\n' +
-                         ' '.join([str(len(self.world)), str(len(self.world[0]))]))
+        self.info.addstr(0, 0, self.text)
+        self.info.clrtobot()
         self.info.refresh()
 
-    def side_log(self):
+    def side_log(self, text=None):
         '''
             Displays text in the sidebar.
         '''
+        if text is not None:
+            self.sidetext = text
         if self.sidetext is None: return
         self.sidebar.addstr(0, 0, self.sidetext)
+        self.sidebar.clrtobot()
         self.sidebar.refresh()
 
     def draw_icon(self):
