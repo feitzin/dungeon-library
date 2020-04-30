@@ -25,9 +25,8 @@ def main(stdscr):
     
     while True:
         key = stdscr.getkey()
-        #display.log('key received')
+        display.log('')
         if key in directions:
-            display.log('')
             dungeon.move(directions[key])
         else:
             if key == ' ':

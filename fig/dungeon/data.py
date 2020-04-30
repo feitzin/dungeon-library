@@ -22,6 +22,6 @@ def read_icon(f):
 def read_key(f):
     key = {}
     for line in open(f, 'r').readlines():
-        splits = line.strip().split()
+        splits = line.strip().split('\t')
         key[splits[0]] = splits[1]
     return key

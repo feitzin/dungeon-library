@@ -26,6 +26,7 @@ class Dungeon():
         self.mode = self.WORLD_MODE
         self.x = -1
         self.y = -1
+        self.direction = None
         self.world = None
         self.w = 0
         self.h = 0
@@ -99,6 +100,7 @@ class Dungeon():
                 self.x = nx
                 # TODO: ambience
                 self.display.move([self.y, self.x])
+                self.direction = offset
                 return
 
         # otherwise, try an off-location activation
