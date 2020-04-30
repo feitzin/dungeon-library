@@ -24,6 +24,25 @@ def end(windows):
         scr.keypad(False)
     curses.echo()
     curses.endwin()
+
+def get_style(style):
+    '''
+        Converts from string to curses style attribute.
+    '''
+    s = style.lower()
+    if s == 'blink':
+        return curses.A_BLINK
+    if s == 'bold':
+        return curses.A_BOLD
+    if s == 'dim':
+        return curses.A_DIM
+    if s == 'reverse':
+        return curses.A_REVERSE
+    if s == 'standout':
+        return curses.A_STANDOUT
+    if s == 'underline':
+        return curses.A_UNDERLINE
+    return None
     
 class Display(ABC):
     '''
@@ -61,6 +80,11 @@ class DungeonDisplay(Display):
         self.margin_w = (self.w - self.side_w - 1)//2
         self.vh = 2 * self.margin_h + 1
         self.vw = 2 * self.margin_w + 1
+
+        # color settings
+        self.palette = None
+        self.colors = None
+        self.styles = None
 
         self.x = -1
         self.y = -1
@@ -101,6 +125,19 @@ class DungeonDisplay(Display):
             self.text = config['text']
             self.log()
 
+        if 'palette' in config:
+            self.palette = read_key(config['palette'], int_keys=True)
+            for n in self.palette:
+                cp = self.palette[n].split()
+                curses.init_pair(n, int(cp[0]), int(cp[1]))
+
+        if 'colors' in config:
+            self.colors = read_key(config['colors'], int_values=True)
+
+        if 'styles' in config:
+            self.styles = read_key(config['styles'])
+            self.styles = {k: get_style(self.styles[k]) for k in self.styles}
+
         if 'icon' in config:
             self.icon = read_icon(config['icon'])
             self.draw_icon()
@@ -136,6 +173,15 @@ class DungeonDisplay(Display):
         self.scr.addch(self.h - 1, self.w - 1, '`')
         self.scr.refresh()
 
+    def format(self, c):
+        formatting = 0
+        if self.colors is not None and c in self.colors:
+            cp = curses.color_pair(self.colors[c])
+            formatting = formatting | cp
+        if self.styles is not None and c in self.styles:
+            formatting = formatting | self.styles[c]
+        return formatting
+
     def render_map(self):
         '''
             Reloads world map info into the vis pad.
@@ -153,7 +199,8 @@ class DungeonDisplay(Display):
             for j in range(w):
                 char = self.world[i][j]
                 self.vis.addch(i + self.margin_h, j + self.margin_w,
-                               char if self.key is None else (self.key[char] if char in self.key else char))
+                               char if self.key is None else (self.key[char] if char in self.key else char),
+                               self.format(char))
 
     def move(self, pos=None):
         '''
@@ -163,12 +210,14 @@ class DungeonDisplay(Display):
         if self.x != -1 and self.y != -1:
             c = self.world[self.y][self.x]
             self.vis.addch(self.y + self.margin_h, self.x + self.margin_w,
-                           self.key[c] if self.key is not None and c in self.key else c)
+                           self.key[c] if self.key is not None and c in self.key else c,
+                           self.format(c))
 
         if pos is not None:
             self.y = pos[0]
             self.x = pos[1]
-        self.vis.addch(self.y + self.margin_h, self.x + self.margin_w, '@')
+        self.vis.addch(self.y + self.margin_h, self.x + self.margin_w, '@',
+                       self.format('self'))
         
         self.vis.refresh(self.y, self.x,
                          0, 0, self.vh - 1, self.vw - 1)

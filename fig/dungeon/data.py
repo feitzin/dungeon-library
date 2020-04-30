@@ -19,9 +19,19 @@ def read_icon(f):
     icon = [l.strip() for l in open(f, 'r').readlines()]
     return icon
 
-def read_key(f):
+def read_key(f, int_keys=False, int_values=False):
     key = {}
     for line in open(f, 'r').readlines():
         splits = line.strip().split('\t')
+        if int_keys:
+            try:
+                splits[0] = int(splits[0])
+            except:
+                pass
+        if int_values:
+            try:
+                splits[1] = int(splits[1])
+            except:
+                pass
         key[splits[0]] = splits[1]
     return key
