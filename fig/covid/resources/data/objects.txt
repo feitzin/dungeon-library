@@ -20,7 +20,7 @@ elsbeth-desk				  It's your labmate Elsbeth's desk. It's way neater than yours. 
 office-heater				  It's the office heater. It never quite seems to be at a comfortable temperature, no matter how you set it. Out the window you can see Teacher's College across the street.
 office-whiteboard			  It's your office whiteboard. It's kind of awkwardly small. At the top left corner you've pinned the holiday card Kathy gave you one season.
 nakul-desk					  It's Nakul's desk.
-nakul-whiteboard			  It's Nakul's whiteboard, filled with scratchwork. You wrote a secret message on it once, but it's been long erased.
+nakul-whiteboard			  It's Nakul's whiteboard, filled with scratchwork. You wrote a secret message on it once, but it's long been erased.
 nakul-couch					  It's Nakul's weirdly comfortable couch/bench(?), currently occupied by stacks of old exams.
 lydia-prank					  It's some terrible slander about the field of NLP that Lydia posted as part of the ongoing sixth floor-seventh floor rivalry. Slander, you say! You have yet to return the favor, but don't worry, your plots are cooking away on the back burner.
 emily-desk					  It's your labmate Emily's desk, stacked with tea and filled notebooks. You find her notetaking habits admirable.
@@ -35,3 +35,4 @@ printer-plaque				  It's the printer room.
 onyx						  It's the black-and-white printer on this floor.
 macaw						  It's the color printer on this floor.
 copier						  It's the copier. You don't have the code.
+mens-restroom-door			  Uh, that's the men's room. You probably shouldn't go in there.
