@@ -1,3 +1,7 @@
+#
+Overview
+#
+
 Welcome to CEPSR 7.
 
 This dungeon was developed in Python version 3.9.4. To play, run
@@ -9,8 +13,9 @@ This code is in development, and functionality is limited. Additional features
 are still in the works.
 
 
-
+#
 FAQ
+#
 
 Q: When I try to run the program, it errors out with
 ```
