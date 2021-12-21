@@ -25,6 +25,8 @@ def main(stdscr):
     
     while True:
         key = stdscr.getkey()
+        if key == curses.KEY_RESIZE:
+            print(True)
         display.log('')
         if key in directions:
             dungeon.move(directions[key])

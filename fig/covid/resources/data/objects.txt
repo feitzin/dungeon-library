@@ -1,0 +1,37 @@
+bulletin-board	It's the bulletin board near your office. Someone has inscribed "HELL- WORLD" on it using pushpins.
+nakul-plaque	The nameplate says "Nakul Verma".
+home-plaque		The nameplate outside your office says "Fei-Tzin Lee | Elsbeth Turcan".
+emily-plaque	For some reason... there's a restroom sign outside this office...?
+zhou-yu-plaque	The nameplate says "Zhou Yu".
+kathy-plaque	It's your advisor's office! The nameplate says "Kathy McKeown".
+blaer-plaque	The nameplate says "Paul Blaer".
+ansaf-plaque	The nameplate says "Ansaf Salleb-Aouissi".
+bauer-plaque	The nameplate says "Daniel Bauer".
+julia-plaque	The nameplate says "Julia Hirschberg".
+gravano-plaque	The nameplate says "Luis Gravano".
+nlp-lab-plaque	It's the NLP lab! The plaque says "7LW1 CEPSR."
+elevator-buttons	It's the elevator button panel.
+southwest-corner-window		  It's a window. The sill is filled with an assortment of plants, including a spectacularly tentacled succulent. You can see across Pupin plaza from here.
+office-bookshelf			  It's the bookcase in your office. It contains some old W4705 final exams, a miscellany of office supplies, some old books from former students in the lab, and some of your own books. Hello there, Moscow Puzzles!
+office-minifridge			  It's the refrigerator in your office. You dare not open it; you haven't cleaned it out since before the pandemic.
+feitzin-desk				  It's your desk! The apple-shaped hand cream and generic-berry-scented lip gloss your friend got you one Christmas sit at the end in a row with Dr. Professor Feathery McFeatherface, the raven-shaped paperweight. The rest of your desk is taken up by the practically overflowing piles of papers you're definitely going to finish reading one of these days. Man, you need to organize those.
+amith-desk					  It's your labmate Amith's desk. The widescreen gaming monitor Kathy accidentally got him sits there in all its gently curved glory.
+elsbeth-desk				  It's your labmate Elsbeth's desk. It's way neater than yours. The two squishy bird friends she acquired from the pharmacy, Winslord Silbort and Wort-Alaline, guard the bottom of her monitor.
+office-heater				  It's the office heater. It never quite seems to be at a comfortable temperature, no matter how you set it. Out the window you can see Teacher's College across the street.
+office-whiteboard			  It's your office whiteboard. It's kind of awkwardly small. At the top left corner you've pinned the holiday card Kathy gave you one season.
+nakul-desk					  It's Nakul's desk.
+nakul-whiteboard			  It's Nakul's whiteboard, filled with scratchwork. You wrote a secret message on it once, but it's been long erased.
+nakul-couch					  It's Nakul's weirdly comfortable couch/bench(?), currently occupied by stacks of old exams.
+lydia-prank					  It's some terrible slander about the field of NLP that Lydia posted as part of the ongoing sixth floor-seventh floor rivalry. Slander, you say! You have yet to return the favor, but don't worry, your plots are cooking away on the back burner.
+emily-desk					  It's your labmate Emily's desk, stacked with tea and filled notebooks. You find her notetaking habits admirable.
+melanie-desk				  It's your labmate Melanie's desk. She actually has posters up! She's got way better taste in decorations than you do. There is a small plastic man sitting astride a llama at one end of the desk.
+daniel-li-desk				  ...why is there an opened bottle of vodka on this desk...?
+hot-water-machine			  It's the trusty old hot water machine.
+kathy-couch					  It's Kathy's incredibly comfortable squashy couch.
+kathy-desk					  It's Kathy's desk.
+kathy-standing-desk			  It's Kathy's standing desk.
+kathy-whiteboard			  It's Kathy's whiteboard, eternally cluttered with notes from her meetings with students.
+printer-plaque				  It's the printer room.
+onyx						  It's the black-and-white printer on this floor.
+macaw						  It's the color printer on this floor.
+copier						  It's the copier. You don't have the code.
