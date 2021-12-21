@@ -1,4 +1,4 @@
-from data import read_map, read_key
+from data import read_map, read_key, read_descriptions, update_locations
 from graphics import DungeonDisplay
 
 class Dungeon():
@@ -28,11 +28,13 @@ class Dungeon():
         self.y = -1
         self.direction = None
         self.world = None
+        self.data = None
         self.w = 0
         self.h = 0
 
         self.movability = None
         self.objects = None
+        self.generic = None
 
         if display is not None:
             self.display = display
@@ -47,20 +49,33 @@ class Dungeon():
         '''
             Load a config specification.
         '''
+        # read world map
         if 'map' in config:
             self.world = read_map(config['map'])
+            self.data = read_map(config['map'])
             self.w = len(self.world[0])
             self.h = len(self.world)
 
+        # set default starting position
         if 'pos' in config and self.world is not None:
             self.y = config['pos'][0]
             self.x = config['pos'][1]
 
+        # add movability information
         if 'movability' in config:
             self.movability = read_key(config['movability'])
 
+        # add unique object key
         if 'objects' in config:
-            self.objects = read_key(config['objects'])
+            self.objects = read_descriptions(config['objects'])
+
+        # add generic object key
+        if 'generic' in config:
+            self.generic = read_key(config['generic'])
+
+        # add special locations to world map
+        if 'spec' in config:
+            update_locations(config['spec'], self.data)
 
     def move(self, key, debug=False):
         '''
@@ -87,7 +102,7 @@ class Dungeon():
         ny = self.y + offset[0]
         nx = self.x + offset[1]
 
-        # check if valid
+        # skip if invalid
         if nx < 0 or nx >= self.w:
             return
         if ny < 0 or ny >= self.h:
@@ -112,12 +127,25 @@ class Dungeon():
         '''
         if self.world is None:
             return
+        
+        # skip if invalid
         if x >= self.w or y >= self.h:
             return
-        o = self.world[y][x]
+
+        o = self.data[y][x]
+        t = self.world[y][x]
         if debug: self.display.side_log(str(self.y) + ',' + str(self.x) + '\n' + str(y) + ',' + str(x) + '\n' + o)
+
+        # desplay description for unique object
         if o in self.objects:
-            self.display.log("It's a " + self.objects[o] + ".")
+            self.display.log(self.objects[o])
+
+        # otherwise, display description for generic object type, if it exists
+        elif t in self.generic:
+            if self.generic[t][0] in ['a', 'e', 'i', 'o', 'u']:
+                self.display.log("It's an " + self.generic[t] + ".")
+            else:
+                self.display.log("It's a " + self.generic[t] + ".")
 
     def look(self):
         '''
@@ -125,7 +153,7 @@ class Dungeon():
         '''
         if self.world is None:
             return
-        pass # TODO
+        pass # TODO: describe region
 
     def act(self):
         '''
@@ -133,4 +161,4 @@ class Dungeon():
         '''
         if self.world is None:
             return
-        pass # TODO
+        pass # TODO: interact with current facing direction, if available; otherwise, default to off-coordinate activation
