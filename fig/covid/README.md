@@ -1,6 +1,6 @@
-#
+##
 Overview
-#
+##
 
 Welcome to CEPSR 7.
 
@@ -13,9 +13,9 @@ This code is in development, and functionality is limited. Additional features
 are still in the works.
 
 
-#
+##
 FAQ
-#
+##
 
 Q: When I try to run the program, it errors out with
 ```
